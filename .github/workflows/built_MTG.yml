@@ -25,14 +25,15 @@ jobs:
         git clone https://gitlab.com/MindTheGapps/"${{ env.REPO }}" --depth=1 -b "${{ env.GAPPSU }}" "${{ env.REPO }}_${{ env.GAPPSU }}"
         git clone https://gitlab.com/MindTheGapps/"${{ env.REPO }}" --depth=1 -b "${{ env.GAPPSV }}" "${{ env.REPO }}_${{ env.GAPPSV }}"
         
-    - name: Build MindTheGapps for U and V
+    - name: Build MindTheGapps for V
       run: |
         cd "${{ env.REPO }}_${{ env.GAPPSU }}"
         make gapps_arm64
-        cd - 
+
+      -name: Build for U
+      run: |
         cd "${{ env.REPO }}_${{ env.GAPPSU }}"
         make gapps_arm64
-        cd -
 
     - name: Check Files
       run: |
