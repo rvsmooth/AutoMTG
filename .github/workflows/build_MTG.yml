@@ -58,10 +58,14 @@ jobs:
         }
         PYELL Building for UpsideDownCake
         cd "${{ env.REPO }}_${{ env.GAPPSU }}"
+        COMMIT_U=$(echo "branch: $(git rev-parse --abbrev-ref HEAD)";git log -1 --format="%s:%h")
+        echo "COMMIT_U=${COMMIT_U}" >> $GITHUB_ENV
         make gapps_arm64
         cd -
         PYELL Building for VanillaIceCream
         cd "${{ env.REPO }}_${{ env.GAPPSV }}"
+        COMMIT_V=$(echo "branch: $(git rev-parse --abbrev-ref HEAD)";git log -1 --format="%s:%h")
+        echo "COMMIT_V=${COMMIT_V}" >> $GITHUB_ENV
         make gapps_arm64
         cd -
 
@@ -76,3 +80,11 @@ jobs:
         tag_name: MindTheGapps_${{ env.current_date }}
         name: ${{ env.ZIP_FILE_NAME }}
         token: ${{ secrets.GITHUB_TOKEN }}
+        body: |
+          ### UpsideDownCake: 
+          ${{ env.COMMIT_U }}
+
+          ### VanillaIceCream: 
+          ${{ env.COMMIT_V }}
+
+
