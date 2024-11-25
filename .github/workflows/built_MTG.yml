@@ -22,24 +22,24 @@ jobs:
 
     - name: Fetch MTG from gitlab
       run: |
-        git clone https://gitlab.com/MindTheGapps/${{ env.REPO }} --depth=1 -b ${{ env.GAPPSU }} $GITHUB_WORKSPACE/${{ env.REPO }}_${{ env.GAPPSU }}
-        git clone https://gitlab.com/MindTheGapps/${{ env.REPO }} --depth=1 -b ${{ env.GAPPSV }} $GITHUB_WORKSPACE/${{ env.REPO }}_${{ env.GAPPSV }}
+        git clone https://gitlab.com/MindTheGapps/${{ env.REPO }} --depth=1 -b ${{ env.GAPPSU }} ${{ env.REPO }}_${{ env.GAPPSU }}
+        git clone https://gitlab.com/MindTheGapps/${{ env.REPO }} --depth=1 -b ${{ env.GAPPSV }} ${{ env.REPO }}_${{ env.GAPPSV }}
         
     - name: Build MindTheGapps for U and V
       run: |
-        cd $GITHUB_WORKSPACE/${{ env.REPO }}_${{ env.GAPPSU }}
+        cd ${{ env.REPO }}_${{ env.GAPPSU }}
         make gapps_arm64
-        cd $GITHUB_WORKSPACE
-        cd $GITHUB_WORKSPACE/${{ env.REPO }}_${{ env.GAPPSU }}
+        cd - 
+        cd ${{ env.REPO }}_${{ env.GAPPSU }}
         make gapps_arm64
-        cd $GITHUB_WORKSPACE
+        cd -
         
     - name: Release
       uses: softprops/action-gh-release@v2
       with:
         files: |
-          $GITHUB_WORKSPACE/${{ env.REPO }}_${{ env.GAPPSU }}/out/MindTheGapps-*.zip
-          $GITHUB_WORKSPACE/${{ env.REPO }}_${{ env.GAPPSV }}/out/MindTheGapps-*.zip
+          ${{ env.REPO }}_${{ env.GAPPSU }}/out/MindTheGapps-*.zip
+          ${{ env.REPO }}_${{ env.GAPPSV }}/out/MindTheGapps-*.zip
         fail_on_unmatched_files: true
         append_body: false
         tag_name: MindTheGapps_${{ env.current_date }}
