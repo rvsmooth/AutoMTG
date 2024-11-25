@@ -26,7 +26,7 @@ GooglePartnerSetup.apk
 
 * Information
 These packages were intended for my personal usage only. However you can use this if you wish on your own risk. 
-This repository does not intend in anyways to disrespect original MindTheGapps packaging nor its authors.
+This repository does not intend in any ways to disrespect original MindTheGapps packaging nor its authors.
 
 * Downloads
 All packages can be downloaded from the [[https://github.com/RVSmooth/AutoMTG/releases][Github Releases]]
