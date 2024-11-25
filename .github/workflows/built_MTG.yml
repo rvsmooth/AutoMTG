@@ -1,0 +1,48 @@
+name: Build MTG
+
+env:
+  GAPPSV: 'vic'
+  GAPPSU: 'upsilon'
+  REPO: 'vendor_gapps'
+
+on:
+  push:
+  workflow_dispatch:
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v4
+
+    - name: Get current date
+      id: date
+      run: |
+        # Get the current date in the format YYYY-MM-DD
+        echo "current_date=$(date +'%Y-%m-%d')" >> $GITHUB_ENV
+
+    - name: Fetch MTG from gitlab
+      run: |
+        git clone https://gitlab.com/MindTheGapps/${{ env.REPO }} --depth=1 -b ${{ env.GAPPSU }} ${{ env.REPO }}_${{ env.GAPPSU }}
+        git clone https://gitlab.com/MindTheGapps/${{ env.REPO }} --depth=1 -b ${{ env.GAPPSV }} ${{ env.REPO }}_${{ env.GAPPSV }}
+        
+    - name: Build MindTheGapps for U and V
+      run: |
+        cd ${{ env.REPO }}_${{ env.GAPPSU }}
+        make gapps_arm64
+        cd $GITHUB_WORKSPACE
+        cd ${{ env.REPO }}_${{ env.GAPPSU }}
+        make gapps_arm64
+        cd $GITHUB_WORKSPACE
+        
+    - name: Release
+      uses: softprops/action-gh-release@v2
+      with:
+        files: |
+          ${{ env.REPO }}_${{ env.GAPPSU }}/out/MindTheGapps*.zip
+          ${{ env.REPO }}_${{ env.GAPPSV }}/out/MindTheGapps*.zip
+        fail_on_unmatched_files: true
+        append_body: false
+        tag_name: MindTheGapps_${{ env.current_date }}
+        name: ${{ env.ZIP_FILE_NAME }}
+        token: ${{ secrets.GITHUB_TOKEN }}
