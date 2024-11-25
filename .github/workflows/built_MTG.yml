@@ -25,21 +25,15 @@ jobs:
         git clone https://gitlab.com/MindTheGapps/"${{ env.REPO }}" --depth=1 -b "${{ env.GAPPSU }}" "${{ env.REPO }}_${{ env.GAPPSU }}"
         git clone https://gitlab.com/MindTheGapps/"${{ env.REPO }}" --depth=1 -b "${{ env.GAPPSV }}" "${{ env.REPO }}_${{ env.GAPPSV }}"
         
-    - name: Build MindTheGapps for V
+    - name: Build MindTheGapps for U & V
       run: |
         cd "${{ env.REPO }}_${{ env.GAPPSU }}"
         make gapps_arm64
-
-    - name: Build for U
-      run: |
-        cd "${{ env.REPO }}_${{ env.GAPPSU }}"
+        cd -
+        cd "${{ env.REPO }}_${{ env.GAPPSV }}"
         make gapps_arm64
+        cd -
 
-    - name: Check Files
-      run: |
-        ls -alh "${{ env.REPO }}_${{ env.GAPPSU }}"/out
-        ls -alh "${{ env.REPO }}_${{ env.GAPPSV }}"/out
-        
     - name: Release
       uses: softprops/action-gh-release@v2
       with:
