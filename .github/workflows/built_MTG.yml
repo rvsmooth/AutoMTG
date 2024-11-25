@@ -25,7 +25,7 @@ jobs:
         git clone https://gitlab.com/MindTheGapps/"${{ env.REPO }}" --depth=1 -b "${{ env.GAPPSU }}" "${{ env.REPO }}_${{ env.GAPPSU }}"
         git clone https://gitlab.com/MindTheGapps/"${{ env.REPO }}" --depth=1 -b "${{ env.GAPPSV }}" "${{ env.REPO }}_${{ env.GAPPSV }}"
 
-      -name: Clean up source
+    - name: Clean up source
       run: |
         APK_PATHS=(
         "arm64/proprietary/product/priv-app/VelvetTitan/VelvetTitan.apk"
