@@ -1,0 +1,35 @@
+#+title: Auto MindTheGapps Builder
+- Builds mind the gapps with github actions for arm64 devices with android versions 14 and 15.
+
+* Table of contents :toc:
+- [[#difference-from-the-original-mindthegapps-package][Difference from the original MindTheGapps package]]
+- [[#information][Information]]
+- [[#downloads][Downloads]]
+- [[#credits][Credits]]
+
+* Difference from the original MindTheGapps package
+
+- I am a lover of minimalism and hence I reduce as many packages as I can (especially proprietary blobs like GAPPs).
+- My version of MTG has removed the following packages
+
+#+begin_src 
+VelvetTitan.apk
+Velvet.apk
+SpeechServicesByGoogle.apk
+talkback.apk
+GoogleFeedback.apk
+Wellbeing.apk
+GooglePartnerSetup.apk
+#+end_src
+
+- Which effectively makes my package of gapps only 100-120MB (original size 400-450MB)
+
+* Information
+These packages were intended for my personal usage only. However you can use this if you wish on your own risk. 
+This repository does not intend in anyways to disrespect original MindTheGapps packaging nor its authors.
+
+* Downloads
+All packages can be downloaded from the [[https://github.com/RVSmooth/AutoMTG/releases][Github Releases]]
+
+* Credits
+- [[https://gitlab.com/MindTheGapps/][MindTheGapps]] (for creating MTG)
