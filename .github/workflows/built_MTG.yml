@@ -25,11 +25,23 @@ jobs:
         git clone https://gitlab.com/MindTheGapps/"${{ env.REPO }}" --depth=1 -b "${{ env.GAPPSU }}" "${{ env.REPO }}_${{ env.GAPPSU }}"
         git clone https://gitlab.com/MindTheGapps/"${{ env.REPO }}" --depth=1 -b "${{ env.GAPPSV }}" "${{ env.REPO }}_${{ env.GAPPSV }}"
         
-    - name: Build MindTheGapps for U & V
+    - name: Build Mind The Gapps
       run: |
+        GREEN='\033[0;32m'
+        YELLOW='\033[0;33m'
+        RESET='\033[0m'
+
+        PGREEN() {
+          echo -e "${GREEN}$@${RESET}"
+        }
+        PYELL() {
+          echo -e "${YELLOW}$@${RESET}"
+        }
+        PYELL Building for UpsideDownCake
         cd "${{ env.REPO }}_${{ env.GAPPSU }}"
         make gapps_arm64
         cd -
+        PYELL Building for VanillaIceCream
         cd "${{ env.REPO }}_${{ env.GAPPSV }}"
         make gapps_arm64
         cd -
@@ -38,8 +50,8 @@ jobs:
       uses: softprops/action-gh-release@v2
       with:
         files: |
-          "${{ env.REPO }}_${{ env.GAPPSU }}"/out/MindTheGapps-*.zip
-          "${{ env.REPO }}_${{ env.GAPPSV }}"/out/MindTheGapps-*.zip
+          ${{ env.REPO }}_${{ env.GAPPSU }}/out/MindTheGapps-*.zip
+          ${{ env.REPO }}_${{ env.GAPPSV }}/out/MindTheGapps-*.zip
         fail_on_unmatched_files: true
         append_body: false
         tag_name: MindTheGapps_${{ env.current_date }}
