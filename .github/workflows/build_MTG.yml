@@ -6,6 +6,8 @@ env:
   REPO: 'vendor_gapps'
 
 on:
+  schedule:
+    - cron: '30 19 * * 6'
   push:
   workflow_dispatch:
 
