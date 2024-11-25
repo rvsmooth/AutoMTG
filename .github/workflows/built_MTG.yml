@@ -30,7 +30,7 @@ jobs:
         cd "${{ env.REPO }}_${{ env.GAPPSU }}"
         make gapps_arm64
 
-      -name: Build for U
+    - name: Build for U
       run: |
         cd "${{ env.REPO }}_${{ env.GAPPSU }}"
         make gapps_arm64
