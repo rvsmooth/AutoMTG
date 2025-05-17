@@ -1,0 +1,1 @@
+branch: vic, commit: cicd: aapt -> aapt2(dd06cee)
