@@ -80,6 +80,23 @@ jobs:
           mv out/MindTheGapps-*.zip ${{ github.workspace }}
           cd -
 
+      - name: Push changes
+        run: |
+            git config --global user.name "github-actions[bot]"
+            git config --global user.email "github-actions[bot]@users.noreply.github.com"
+
+               echo $LAST_HASH_U | tee udc.txt 
+               echo $LAST_HASH_V | tee vic.txt 
+                git add udc.txt
+                git add vic.txt
+
+            if ! git diff --cached --quiet; then
+               git commit -m "update changelogs text"
+               git push 
+            else
+              echo "No changes to commit"
+            fi
+
       - name: Release        
         uses: softprops/action-gh-release@v2
         with:
