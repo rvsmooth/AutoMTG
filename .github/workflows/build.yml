@@ -45,13 +45,14 @@ jobs:
       - name: Build For Android 15 
         if: ${{ inputs.BUILD_VIC == '0' }}
         run: | 
+          set -x
           git clone https://gitlab.com/MindTheGapps/"${{ env.REPO }}" --depth=1 -b \
             "${{ env.GAPPSV }}" "${{ env.REPO }}_${{ env.GAPPSV }}"
           
           APK_PATHS=$(cat ${{ github.workspace }}/remove.list)
           
-          for APK_PATH in "${APK_PATHS}"; do
-          rm -f $(find . -iname "$APK_PATH")
+          for APK_PATH in $APK_PATH; do
+          rm -f $(find . -iname $APK_PATH)
           done
 
           cd "${{ env.REPO }}_${{ env.GAPPSV }}"
