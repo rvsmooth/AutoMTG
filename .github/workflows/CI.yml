@@ -5,6 +5,8 @@ on:
   push:
     branches:
       - main
+  schedule:
+    - cron: '30 19 * * 6'
 
 jobs:
   fetch-commit-hash:
