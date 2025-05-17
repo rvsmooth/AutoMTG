@@ -12,6 +12,7 @@ jobs:
     outputs:
       build_udc: ${{ steps.compare.outputs.build_udc }}
       build_vic: ${{ steps.compare.outputs.build_vic }}
+      run_build: ${{ steps.compare.outputs.run_build }}
     steps:
       - uses: actions/checkout@v4
 
@@ -46,8 +47,26 @@ jobs:
           fi
           echo "build_vic=$BUILD_VIC" >> $GITHUB_OUTPUT
 
-  call-reusable:
+          if [[ "$BUILD_UDC" == "0" ]]; then 
+          RUN_BUILD=0
+          elif [[ "$BUILD_VIC" == "0" ]]; then 
+          RUN_BUILD=0 
+          else 
+          RUN_BUILD=1 
+          fi
+
+          echo "run_build=$RUN_BUILD" >> $GITHUB_OUTPUT
+
+  gate-reusable:
+    runs-on: ubuntu-latest
     needs: fetch-commit-hash
+    if: ${{ needs.fetch-commit-hash.outputs.run_build == '0' }}
+    steps:
+      - name: Debug
+        run: echo "RUN_BUILD is set to 0, triggering build"
+
+  call-reusable:
+    needs: gate-reusable
     uses: ./.github/workflows/build.yml
     with:
       BUILD_UDC: ${{ needs.fetch-commit-hash.outputs.build_udc }}
