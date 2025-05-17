@@ -15,7 +15,7 @@ env:
     REPO: 'vendor_gapps'
 
 jobs:
-  print-envs:
+  build:
     runs-on: ubuntu-latest
     env:
       BUILD_UDC: ${{ inputs.BUILD_UDC }}
@@ -26,6 +26,7 @@ jobs:
         run: |
           echo "BUILD_UDC: $BUILD_UDC"
           echo "BUILD_VIC: $BUILD_VIC"
+          echo "current_date=$(date +'%Y-%m-%d')" >> $GITHUB_ENV
       - name: Build For Android 15 
         if: ${{ inputs.BUILD_VIC == '0' }}
         run: | 
@@ -41,3 +42,21 @@ jobs:
           cd "${{ env.REPO }}_${{ env.GAPPSU }}"
           make gapps_arm64 
           cd -
+
+      - name: Release        
+        uses: softprops/action-gh-release@v2
+        with:
+          files: |
+            ${{ env.REPO }}_${{ env.GAPPSU }}/out/MindTheGapps-*.zip
+            ${{ env.REPO }}_${{ env.GAPPSV }}/out/MindTheGapps-*.zip
+          fail_on_unmatched_files: true
+          append_body: false
+          tag_name: MindTheGapps_${{ env.current_date }}
+          name: ${{ env.ZIP_FILE_NAME }}
+          token: ${{ secrets.GITHUB_TOKEN }}
+          body: |
+            ### UpsideDownCake: 
+            ${{ env.COMMIT_U }}
+
+            ### VanillaIceCream: 
+            ${{ env.COMMIT_V }}
