@@ -40,7 +40,8 @@ jobs:
           
           APK_PATHS=$(cat ${{ github.workspace }}/remove.list)
           
-          for APK_PATH in "${APK_PATHS}"; do
+          for APK_PATH in "$APK_PATHS"; do
+          echo $(find . -iname "*$APK_PATH*")
           rm -f $(find . -iname "*$APK_PATH*")
           done
 
@@ -50,11 +51,30 @@ jobs:
           make gapps_arm64 
           cd -
 
+      - name: Build For Android 14
+        if: ${{ inputs.BUILD_UDC == '0' }}
+        run: | 
+          git clone https://gitlab.com/MindTheGapps/"${{ env.REPO }}" --depth=1 -b \
+            "${{ env.GAPPSU }}" "${{ env.REPO }}_${{ env.GAPPSU }}"
+          
+          APK_PATHS=$(cat ${{ github.workspace }}/remove.list)
+          
+          for APK_PATH in "$APK_PATHS"; do
+          rm -f $(find . -iname "*$APK_PATH*")
+          done
+
+          cd "${{ env.REPO }}_${{ env.GAPPSU }}"
+          COMMIT_U="branch: $(git rev-parse --abbrev-ref HEAD), commit: $(git log -1 --format='%s(%h)')"
+          echo "COMMIT_U=${COMMIT_U}" >> $GITHUB_ENV
+          make gapps_arm64 
+          cd -
+
       - name: Release        
         uses: softprops/action-gh-release@v2
         with:
           files: |
             ${{ env.REPO }}_${{ env.GAPPSV }}/out/MindTheGapps-*.zip
+            ${{ env.REPO }}_${{ env.GAPPSU }}/out/MindTheGapps-*.zip
           fail_on_unmatched_files: true
           append_body: false
           tag_name: MindTheGapps_${{ env.current_date }}
@@ -63,3 +83,5 @@ jobs:
           body: |
             ### VanillaIceCream: 
             ${{ env.COMMIT_V }}
+            ### UpsideDownCake: 
+            ${{ env.COMMIT_U }}
