@@ -63,3 +63,4 @@ jobs:
     with:
       BUILD_UDC: ${{ needs.fetch-commit-hash.outputs.build_udc }}
       BUILD_VIC: ${{ needs.fetch-commit-hash.outputs.build_vic }}
+      RUN_BUILD: ${{ needs.fetch-commit-hash.outputs.run_build }}

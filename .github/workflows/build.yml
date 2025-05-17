@@ -9,6 +9,9 @@ on:
       BUILD_VIC:
         required: true
         type: string
+      RUN_BUILD:
+        required: true
+        type: string
 env: 
     GAPPSV: 'vic'
     GAPPSU: 'upsilon'
@@ -20,6 +23,8 @@ jobs:
     env:
       BUILD_UDC: ${{ inputs.BUILD_UDC }}
       BUILD_VIC: ${{ inputs.BUILD_VIC }}
+      RUN_BUILD: ${{ inputs.RUN_BUILD }}
+    if: ${{ inputs.RUN_BUILD == '0' }}
     steps:
       - uses: actions/checkout@v4
       - name: Show passed environment variables
