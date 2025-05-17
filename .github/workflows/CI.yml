@@ -5,6 +5,8 @@ on:
   push:
     branches:
       - main
+    paths-ignore:
+      - 'README.*'
   schedule:
     - cron: '30 19 * * 6'
 
