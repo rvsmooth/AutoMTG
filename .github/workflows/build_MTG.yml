@@ -92,9 +92,12 @@ jobs:
              echo udc package is already up to date 
           fi
 
-          echo "$COMMIT_V" | tee vic.txt 
-          git commit -m "update changelogs text"
-          git push 
+          if ! git diff --cached --quiet; then
+             git commit -m "update changelogs text"
+             git push 
+          else
+             echo "No changes to commit"
+          fi
 
     - name: Release
       uses: softprops/action-gh-release@v2
