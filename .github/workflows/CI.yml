@@ -13,6 +13,8 @@ jobs:
       build_udc: ${{ steps.compare.outputs.build_udc }}
       build_vic: ${{ steps.compare.outputs.build_vic }}
       run_build: ${{ steps.compare.outputs.run_build }}
+      last_hash_v: ${{ steps.compare.outputs.last_hash_v }}
+      last_hash_u: ${{ steps.compare.outputs.last_hash_u }}
     steps:
       - uses: actions/checkout@v4
 
@@ -56,6 +58,8 @@ jobs:
           fi
 
           echo "run_build=$RUN_BUILD" >> $GITHUB_OUTPUT
+          echo "last_hash_v=$LAST_HASH_V" >> $GITHUB_OUTPUT
+          echo "last_hash_u=$LAST_HASH_U" >> $GITHUB_OUTPUT
 
   call-reusable:
     needs: fetch-commit-hash
@@ -64,3 +68,5 @@ jobs:
       BUILD_UDC: ${{ needs.fetch-commit-hash.outputs.build_udc }}
       BUILD_VIC: ${{ needs.fetch-commit-hash.outputs.build_vic }}
       RUN_BUILD: ${{ needs.fetch-commit-hash.outputs.run_build }}
+      LAST_HASH_V: ${{ needs.fetch-commit-hash.outputs.last_hash_v }}
+      LAST_HASH_U: ${{ needs.fetch-commit-hash.outputs.last_hash_u }}

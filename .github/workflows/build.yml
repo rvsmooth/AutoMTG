@@ -12,6 +12,12 @@ on:
       RUN_BUILD:
         required: true
         type: string
+      LAST_HASH_V:
+        required: true
+        type: string
+      LAST_HASH_U:
+        required: true
+        type: string
 env: 
     GAPPSV: 'vic'
     GAPPSU: 'upsilon'
@@ -24,6 +30,8 @@ jobs:
       BUILD_UDC: ${{ inputs.BUILD_UDC }}
       BUILD_VIC: ${{ inputs.BUILD_VIC }}
       RUN_BUILD: ${{ inputs.RUN_BUILD }}
+      LAST_HASH_V: ${{ inputs.LAST_HASH_V }}
+      LAST_HASH_U: ${{ inputs.LAST_HASH_U }}
     if: ${{ inputs.RUN_BUILD == '0' }}
     steps:
       - uses: actions/checkout@v4
@@ -31,6 +39,8 @@ jobs:
         run: |
           echo "BUILD_UDC: $BUILD_UDC"
           echo "BUILD_VIC: $BUILD_VIC"
+          echo "LAST_HASH_V: $LAST_HASH_V"
+          echo "LAST_HASH_U: $LAST_HASH_U"
           echo "current_date=$(date +'%Y-%m-%d')" >> $GITHUB_ENV
       - name: Build For Android 15 
         if: ${{ inputs.BUILD_VIC == '0' }}
