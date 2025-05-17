@@ -99,7 +99,21 @@ jobs:
              echo "No changes to commit"
           fi
 
-    - name: Release
+    - name: Check if release files exist
+      id: check_files
+      run: |
+          set -e
+          files_found=0
+          if compgen -G "${{ env.REPO }}_${{ env.GAPPSU }}/out/MindTheGapps-*.zip" > /dev/null; then
+            files_found=1
+          fi
+          if compgen -G "${{ env.REPO }}_${{ env.GAPPSV }}/out/MindTheGapps-*.zip" > /dev/null; then
+            files_found=1
+          fi
+          echo "files_found=$files_found" >> $GITHUB_OUTPUT
+
+    - name: Release        
+      if: steps.check_files.outputs.files_found == '1'
       uses: softprops/action-gh-release@v2
       with:
         files: |
