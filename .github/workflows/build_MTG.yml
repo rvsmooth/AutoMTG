@@ -8,6 +8,8 @@ env:
 on:
   workflow_dispatch:
   push :
+  schedule:
+      - cron: '0 0 * * 0'
 
 jobs:
   build:
@@ -20,7 +22,7 @@ jobs:
         git clone https://gitlab.com/MindTheGapps/"${{ env.REPO }}" --depth=1 -b "${{ env.GAPPSU }}" "${{ env.REPO }}_${{ env.GAPPSU }}"
         git clone https://gitlab.com/MindTheGapps/"${{ env.REPO }}" --depth=1 -b "${{ env.GAPPSV }}" "${{ env.REPO }}_${{ env.GAPPSV }}"
 
-    - name: Clean up source
+    - name: Clean up source and set vars
       run: |
         echo "Clean up stuffs"
         APK_PATHS=(
@@ -41,24 +43,12 @@ jobs:
         echo "current_date=$(date +'%Y-%m-%d')" >> $GITHUB_ENV
         echo "CURRENT_PACKAGE_V=$(cat /home/runner/work/AutoMTG/AutoMTG/vic.txt)" >> $GITHUB_ENV
         echo "CURRENT_PACKAGE_U=$(cat /home/runner/work/AutoMTG/AutoMTG/udc.txt)" >> $GITHUB_ENV
-        ls -la
 
     - name: Build Mind The Gapps
       run: |
         echo "Initiate Builds"
 
-        GREEN='\033[0;32m'
-        YELLOW='\033[0;33m'
-        RESET='\033[0m'
-
-        PGREEN() {
-          echo -e "${GREEN}$@${RESET}"
-        }
-        PYELL() {
-          echo -e "${YELLOW}$@${RESET}"
-        }          
-
-        PYELL Building for UpsideDownCake
+        echo Building for UpsideDownCake
         cd "${{ env.REPO }}_${{ env.GAPPSU }}"
         COMMIT_U="branch: $(git rev-parse --abbrev-ref HEAD), commit: $(git log -1 --format='%s(%h)')"
         echo "COMMIT_U=${COMMIT_U}" >> $GITHUB_ENV
@@ -66,11 +56,11 @@ jobs:
         if [[ "${CURRENT_PACKAGE_U}" != "$COMMIT_U"  ]]; then 
             make gapps_arm64
         else
-            PYELL Packages already up to date
+            echo Packages already up to date
         fi
 
         cd -
-        PYELL Building for VanillaIceCream
+        echo Building for VanillaIceCream
         cd "${{ env.REPO }}_${{ env.GAPPSV }}"
         COMMIT_V="branch: $(git rev-parse --abbrev-ref HEAD), commit: $(git log -1 --format='%s(%h)')"
         echo "COMMIT_V=${COMMIT_V}" >> $GITHUB_ENV
@@ -78,12 +68,12 @@ jobs:
         if [[ "${CURRENT_PACKAGE_V}" != "$COMMIT_V"  ]]; then 
             make gapps_arm64
         else
-            PYELL Packages already up to date
+            echo Packages already up to date
         fi
 
         cd -
 
-    - name: push logs 
+    - name: Push changes
       run: |
           git config --global user.name "github-actions[bot]"
           git config --global user.email "github-actions[bot]@users.noreply.github.com"
@@ -92,16 +82,34 @@ jobs:
              echo "$COMMIT_U" | tee udc.txt 
              git add udc.txt
           else 
-             PYELL udc package is already up to date 
+             echo udc package is already up to date 
           fi
               
           if [[ "${CURRENT_PACKAGE_V}" != "$COMMIT_V"  ]]; then 
              echo "$COMMIT_V" | tee vic.txt 
              git add vic.txt
           else 
-             PYELL udc package is already up to date 
+             echo udc package is already up to date 
           fi
 
           echo "$COMMIT_V" | tee vic.txt 
           git commit -m "update changelogs text"
-          git push
+          git push 
+
+    - name: Release
+      uses: softprops/action-gh-release@v2
+      with:
+        files: |
+          ${{ env.REPO }}_${{ env.GAPPSU }}/out/MindTheGapps-*.zip
+          ${{ env.REPO }}_${{ env.GAPPSV }}/out/MindTheGapps-*.zip
+        fail_on_unmatched_files: true
+        append_body: false
+        tag_name: MindTheGapps_${{ env.current_date }}
+        name: ${{ env.ZIP_FILE_NAME }}
+        token: ${{ secrets.GITHUB_TOKEN }}
+        body: |
+          ### UpsideDownCake: 
+          ${{ env.COMMIT_U }}
+
+          ### VanillaIceCream: 
+          ${{ env.COMMIT_V }}
