@@ -21,20 +21,21 @@ jobs:
       BUILD_UDC: ${{ inputs.BUILD_UDC }}
       BUILD_VIC: ${{ inputs.BUILD_VIC }}
     steps:
+      - uses: actions/checkout@v4
       - name: Show passed environment variables
         run: |
           echo "BUILD_UDC: $BUILD_UDC"
           echo "BUILD_VIC: $BUILD_VIC"
       - name: Build For Android 15 
-        if: ${{ inputs.BUILD_VDC == '0' }}
+        if: ${{ inputs.BUILD_VIC == '0' }}
         run: | 
           git clone https://gitlab.com/MindTheGapps/"${{ env.REPO }}" --depth=1 -b \
             "${{ env.GAPPSU }}" "${{ env.REPO }}_${{ env.GAPPSU }}"
           
           APK_PATHS=$(cat ${{ github.workspace }}/remove.list)
           
-          for APK_PATH in "${APK_PATHS[@]}"; do
-          rm -r $(find . -iname "*$APK_PATH*")
+          for APK_PATH in "${APK_PATHS}"; do
+          rm -f $(find . -iname "*$APK_PATH*")
           done
 
           cd "${{ env.REPO }}_${{ env.GAPPSU }}"
