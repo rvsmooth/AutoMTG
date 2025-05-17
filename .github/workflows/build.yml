@@ -58,7 +58,9 @@ jobs:
           cd "${{ env.REPO }}_${{ env.GAPPSV }}"
           COMMIT_V="branch: $(git rev-parse --abbrev-ref HEAD), commit: $(git log -1 --format='%s(%h)')"
           echo "COMMIT_V=${COMMIT_V}" >> $GITHUB_ENV
-          make gapps_arm64 
+          make gapps_arm64
+          mv out/MindTheGapps-*.zip ${{ github.workspace }}
+
           cd -
 
       - name: Build For Android 14
@@ -77,14 +79,14 @@ jobs:
           COMMIT_U="branch: $(git rev-parse --abbrev-ref HEAD), commit: $(git log -1 --format='%s(%h)')"
           echo "COMMIT_U=${COMMIT_U}" >> $GITHUB_ENV
           make gapps_arm64 
+          mv out/MindTheGapps-*.zip ${{ github.workspace }}
           cd -
 
       - name: Release        
         uses: softprops/action-gh-release@v2
         with:
           files: |
-            ${{ env.REPO }}_${{ env.GAPPSV }}/out/MindTheGapps-*.zip
-            ${{ env.REPO }}_${{ env.GAPPSU }}/out/MindTheGapps-*.zip
+          ${{ github.workspace }}/MindTheGapps-*.zip
           fail_on_unmatched_files: true
           append_body: false
           tag_name: MindTheGapps_${{ env.current_date }}
