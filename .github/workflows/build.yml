@@ -51,7 +51,7 @@ jobs:
           
           APK_PATHS=$(cat ${{ github.workspace }}/remove.list)
           
-          for APK_PATH in $APK_PATH; do
+          for APK_PATH in $APK_PATHS; do
           rm -f $(find . -iname $APK_PATH)
           done
 
@@ -71,7 +71,7 @@ jobs:
           
           APK_PATHS=$(cat ${{ github.workspace }}/remove.list)
           
-          for APK_PATH in "${APK_PATHS}"; do
+          for APK_PATH in $APK_PATHS; do
           rm -f $(find . -iname "$APK_PATH")
           done
 
