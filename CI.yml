@@ -1,0 +1,54 @@
+name: CI
+
+on:
+  workflow_dispatch:
+  push:
+    branches:
+      - main
+
+jobs:
+  fetch-commit-hash:
+    runs-on: ubuntu-latest
+    outputs:
+      build_udc: ${{ steps.compare.outputs.build_udc }}
+      build_vic: ${{ steps.compare.outputs.build_vic }}
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Checkout repos and set variables
+        run: |
+          LAST_HASH_U=$(git ls-remote https://gitlab.com/MindTheGapps/vendor_gapps vic | awk '{ print $1 }')
+          LAST_HASH_V=$(git ls-remote https://gitlab.com/MindTheGapps/vendor_gapps upsilon | awk '{ print $1 }')
+          LOCAL_HASH_U=$(cat ${{ github.workspace }}/vic.txt)
+          LOCAL_HASH_V=$(cat ${{ github.workspace }}/udc.txt)
+
+          echo "LAST_HASH_U=${LAST_HASH_U}" >> $GITHUB_ENV
+          echo "LAST_HASH_V=${LAST_HASH_V}" >> $GITHUB_ENV
+          echo "LOCAL_HASH_U=${LOCAL_HASH_U}" >> $GITHUB_ENV
+          echo "LOCAL_HASH_V=${LOCAL_HASH_V}" >> $GITHUB_ENV
+
+      - name: Compare version with last release
+        id: compare
+        run: |
+          if [[ "$LAST_HASH_U" != "$LOCAL_HASH_U" ]]; then 
+            BUILD_UDC=0 
+          else 
+            echo "Android 14 Gapps are already up-to-date with upstream"
+            BUILD_UDC=1
+          fi
+          echo "build_udc=$BUILD_UDC" >> $GITHUB_OUTPUT
+
+          if [[ "$LAST_HASH_V" != "$LOCAL_HASH_V" ]]; then 
+            BUILD_VIC=0 
+          else 
+            echo "Android 15 Gapps are already up-to-date with upstream"
+            BUILD_VIC=1
+          fi
+          echo "build_vic=$BUILD_VIC" >> $GITHUB_OUTPUT
+
+  call-reusable:
+    needs: fetch-commit-hash
+    uses: ./.github/workflows/build.yml
+    with:
+      BUILD_UDC: ${{ needs.fetch-commit-hash.outputs.build_udc }}
+      BUILD_VIC: ${{ needs.fetch-commit-hash.outputs.build_vic }}
