@@ -48,5 +48,5 @@ jobs:
   call-reusable:
     uses: ./.github/workflows/reusable-workflow.yml
     with:
-      BUILD_UDC: ${{ needs.set_vars.outputs.build_udc }}
-      BUILD_VIC: ${{ needs.set_vars.outputs.build_vic }}
+      BUILD_UDC: ${{ needs.fetch-commit-hash.outputs.build_udc }}
+      BUILD_VIC: ${{ needs.fetch-commit-hash.outputs.build_vic }}

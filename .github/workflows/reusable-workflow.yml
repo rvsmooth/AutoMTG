@@ -5,10 +5,10 @@ on:
     inputs:
       BUILD_UDC:
         required: true
-        type: string
+        type: number
       BUILD_VIC:
         required: true
-        type: string
+        type: number
 
 jobs:
   print-envs:
