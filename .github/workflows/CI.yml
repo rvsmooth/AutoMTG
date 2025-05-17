@@ -48,7 +48,7 @@ jobs:
 
   call-reusable:
     needs: fetch-commit-hash
-    uses: ./.github/workflows/reusable-workflow.yml
+    uses: ./.github/workflows/build.yml
     with:
       BUILD_UDC: ${{ needs.fetch-commit-hash.outputs.build_udc }}
       BUILD_VIC: ${{ needs.fetch-commit-hash.outputs.build_vic }}
