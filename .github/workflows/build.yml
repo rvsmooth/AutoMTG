@@ -40,20 +40,3 @@ jobs:
           cd "${{ env.REPO }}_${{ env.GAPPSU }}"
           make gapps_arm64 
           cd -
-
-      - name: Release        
-      uses: softprops/action-gh-release@v2
-      with:
-        files: |
-          ${{ env.REPO }}_${{ env.GAPPSV }}/out/MindTheGapps-*.zip
-        fail_on_unmatched_files: true
-        append_body: false
-        tag_name: MindTheGapps_${{ env.current_date }}
-        name: ${{ env.ZIP_FILE_NAME }}
-        token: ${{ secrets.GITHUB_TOKEN }}
-        body: |
-          ### UpsideDownCake: 
-          ${{ env.COMMIT_U }}
-
-          ### VanillaIceCream: 
-          ${{ env.COMMIT_V }} 
