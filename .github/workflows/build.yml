@@ -49,11 +49,9 @@ jobs:
           git clone https://gitlab.com/MindTheGapps/"${{ env.REPO }}" --depth=1 -b \
             "${{ env.GAPPSV }}" "${{ env.REPO }}_${{ env.GAPPSV }}"
           
-          APK_PATHS=$(cat ${{ github.workspace }}/remove.list)
-          
-          for APK_PATH in $APK_PATHS; do
-          rm -f $(find . -iname $APK_PATH)
-          done
+          while IFS= read -r APK_PATH; do
+          rm -f $(find . -iname "$APK_PATH")
+          done < "${{ github.workspace }}/remove.list"
 
           cd "${{ env.REPO }}_${{ env.GAPPSV }}"
           COMMIT_V="branch: $(git rev-parse --abbrev-ref HEAD), commit: $(git log -1 --format='%s(%h)')"
@@ -71,9 +69,9 @@ jobs:
           
           APK_PATHS=$(cat ${{ github.workspace }}/remove.list)
           
-          for APK_PATH in $APK_PATHS; do
+          while IFS= read -r APK_PATH; do
           rm -f $(find . -iname "$APK_PATH")
-          done
+          done < "${{ github.workspace }}/remove.list"
 
           cd "${{ env.REPO }}_${{ env.GAPPSU }}"
           COMMIT_U="branch: $(git rev-parse --abbrev-ref HEAD), commit: $(git log -1 --format='%s(%h)')"
@@ -86,7 +84,7 @@ jobs:
         uses: softprops/action-gh-release@v2
         with:
           files: |
-          ${{ github.workspace }}/MindTheGapps-*.zip
+            ${{ github.workspace }}/MindTheGapps-*.zip
           fail_on_unmatched_files: true
           append_body: false
           tag_name: MindTheGapps_${{ env.current_date }}
