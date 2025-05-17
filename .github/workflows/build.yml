@@ -31,7 +31,7 @@ jobs:
         if: ${{ inputs.BUILD_VIC == '0' }}
         run: | 
           git clone https://gitlab.com/MindTheGapps/"${{ env.REPO }}" --depth=1 -b \
-            "${{ env.GAPPSU }}" "${{ env.REPO }}_${{ env.GAPPSU }}"
+            "${{ env.GAPPSV }}" "${{ env.REPO }}_${{ env.GAPPSV }}"
           
           APK_PATHS=$(cat ${{ github.workspace }}/remove.list)
           
@@ -39,7 +39,9 @@ jobs:
           rm -f $(find . -iname "*$APK_PATH*")
           done
 
-          cd "${{ env.REPO }}_${{ env.GAPPSU }}"
+          cd "${{ env.REPO }}_${{ env.GAPPSV }}"
+          COMMIT_V="branch: $(git rev-parse --abbrev-ref HEAD), commit: $(git log -1 --format='%s(%h)')"
+          echo "COMMIT_V=${COMMIT_V}" >> $GITHUB_ENV
           make gapps_arm64 
           cd -
 
@@ -47,7 +49,6 @@ jobs:
         uses: softprops/action-gh-release@v2
         with:
           files: |
-            ${{ env.REPO }}_${{ env.GAPPSU }}/out/MindTheGapps-*.zip
             ${{ env.REPO }}_${{ env.GAPPSV }}/out/MindTheGapps-*.zip
           fail_on_unmatched_files: true
           append_body: false
@@ -55,8 +56,5 @@ jobs:
           name: ${{ env.ZIP_FILE_NAME }}
           token: ${{ secrets.GITHUB_TOKEN }}
           body: |
-            ### UpsideDownCake: 
-            ${{ env.COMMIT_U }}
-
             ### VanillaIceCream: 
             ${{ env.COMMIT_V }}
