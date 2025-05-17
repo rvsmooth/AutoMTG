@@ -10,6 +10,8 @@
 * Difference from the original MindTheGapps package
 
 - I am a lover of minimalism and hence I reduce as many packages as I can (especially proprietary blobs like GAPPs).
+- This repo builds GAPPs automatically if there are updates available on the upstream. It checks for and conditionally
+  builds every Sunday.
 - My version of MTG has removed the following packages
 
 #+begin_src 
