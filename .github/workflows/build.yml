@@ -40,9 +40,8 @@ jobs:
           
           APK_PATHS=$(cat ${{ github.workspace }}/remove.list)
           
-          for APK_PATH in "$APK_PATHS"; do
-          echo $(find . -iname "*$APK_PATH*")
-          rm -f $(find . -iname "*$APK_PATH*")
+          for APK_PATH in "${APK_PATHS}"; do
+          rm -f $(find . -iname "$APK_PATH")
           done
 
           cd "${{ env.REPO }}_${{ env.GAPPSV }}"
@@ -59,8 +58,8 @@ jobs:
           
           APK_PATHS=$(cat ${{ github.workspace }}/remove.list)
           
-          for APK_PATH in "$APK_PATHS"; do
-          rm -f $(find . -iname "*$APK_PATH*")
+          for APK_PATH in "${APK_PATHS}"; do
+          rm -f $(find . -iname "$APK_PATH")
           done
 
           cd "${{ env.REPO }}_${{ env.GAPPSU }}"
