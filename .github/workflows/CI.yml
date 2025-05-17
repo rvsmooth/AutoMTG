@@ -17,8 +17,8 @@ jobs:
 
       - name: Checkout repos and set variables
         run: |
-          LAST_HASH_U=$(git ls-remote https://gitlab.com/MindTheGapps/vendor_gapps vic | awk '{ print $1 }')
-          LAST_HASH_V=$(git ls-remote https://gitlab.com/MindTheGapps/vendor_gapps upsilon | awk '{ print $1 }')
+          LAST_HASH_U=$(git ls-remote https://gitlab.com/MindTheGapps/vendor_gapps upsilon | awk '{ print $1 }')
+          LAST_HASH_V=$(git ls-remote https://gitlab.com/MindTheGapps/vendor_gapps vic | awk '{ print $1 }')
           LOCAL_HASH_U=$(cat ${{ github.workspace }}/vic.txt)
           LOCAL_HASH_V=$(cat ${{ github.workspace }}/udc.txt)
 
