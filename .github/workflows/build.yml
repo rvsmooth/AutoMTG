@@ -9,6 +9,9 @@ on:
       BUILD_VIC:
         required: true
         type: string
+      BUILD_BAK:
+        required: true
+        type: string
       RUN_BUILD:
         required: true
         type: string
@@ -18,9 +21,13 @@ on:
       LAST_HASH_U:
         required: true
         type: string
+      LAST_HASH_B:
+        required: true
+        type: string
 env: 
     GAPPSV: 'vic'
     GAPPSU: 'upsilon'
+    GAPPSB: 'baklava'
     REPO: 'vendor_gapps'
 
 jobs:
@@ -29,9 +36,11 @@ jobs:
     env:
       BUILD_UDC: ${{ inputs.BUILD_UDC }}
       BUILD_VIC: ${{ inputs.BUILD_VIC }}
+      BUILD_BAK: ${{ inputs.BUILD_VIC }}
       RUN_BUILD: ${{ inputs.RUN_BUILD }}
       LAST_HASH_V: ${{ inputs.LAST_HASH_V }}
       LAST_HASH_U: ${{ inputs.LAST_HASH_U }}
+      LAST_HASH_B: ${{ inputs.LAST_HASH_U }}
     if: ${{ inputs.RUN_BUILD == '0' }}
     steps:
       - uses: actions/checkout@v4
@@ -39,8 +48,10 @@ jobs:
         run: |
           echo "BUILD_UDC: $BUILD_UDC"
           echo "BUILD_VIC: $BUILD_VIC"
+          echo "BUILD_BAK: $BUILD_BAK"
           echo "LAST_HASH_V: $LAST_HASH_V"
           echo "LAST_HASH_U: $LAST_HASH_U"
+          echo "LAST_HASH_B: $LAST_HASH_B"
           echo "current_date=$(date +'%Y-%m-%d')" >> $GITHUB_ENV
       - name: Build For Android 15 
         if: ${{ inputs.BUILD_VIC == '0' }}
@@ -80,6 +91,24 @@ jobs:
           mv out/MindTheGapps-*.zip ${{ github.workspace }}
           cd -
 
+      - name: Build For Android 16
+        if: ${{ inputs.BUILD_BAK == '0' }}
+        run: |
+          git clone https://gitlab.com/MindTheGapps/"${{ env.REPO }}" --depth=1 -b \
+            "${{ env.GAPPSB }}" "${{ env.REPO }}_${{ env.GAPPSB }}"
+          
+          APK_PATHS=$(cat ${{ github.workspace }}/remove.list)
+          
+          while IFS= read -r APK_PATH; do
+          rm -f $(find . -iname "$APK_PATH")
+          done < "${{ github.workspace }}/remove.list"
+
+          cd "${{ env.REPO }}_${{ env.GAPPSB }}"
+          COMMIT_B="branch: $(git rev-parse --abbrev-ref HEAD), commit: $(git log -1 --format='%s(%h)')"
+          echo "COMMIT_B=${COMMIT_B}" >> $GITHUB_ENV
+          make gapps_arm64 
+          mv out/MindTheGapps-*.zip ${{ github.workspace }}
+          cd -
       - name: Push changes
         run: |
             git config --global user.name "github-actions[bot]"
@@ -87,8 +116,10 @@ jobs:
 
                echo $LAST_HASH_U | tee udc.txt 
                echo $LAST_HASH_V | tee vic.txt 
+               echo $LAST_HASH_B | tee bak.txt 
                 git add udc.txt
                 git add vic.txt
+                git add bak.txt
 
             if ! git diff --cached --quiet; then
                git commit -m "update changelogs text"
@@ -97,7 +128,7 @@ jobs:
               echo "No changes to commit"
             fi
 
-      - name: Release        
+      - name: Release
         uses: softprops/action-gh-release@v2
         with:
           files: |
@@ -112,3 +143,5 @@ jobs:
             ${{ env.COMMIT_V }}
             ### UpsideDownCake: 
             ${{ env.COMMIT_U }}
+            ### UpsideDownCake: 
+            ${{ env.COMMIT_B }}
