@@ -108,6 +108,7 @@ jobs:
           echo "COMMIT_B=${COMMIT_B}" >> $GITHUB_ENV
           cp -r ${{ github.workspace }}/MiuiCameraOverlay overlay/
           make gapps_arm64
+          ls overlay
           mv out/MindTheGapps-*.zip ${{ github.workspace }}
           cd -
       - name: Push changes
