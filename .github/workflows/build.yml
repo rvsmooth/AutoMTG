@@ -24,7 +24,7 @@ on:
       LAST_HASH_B:
         required: true
         type: string
-env: 
+env:
     GAPPSV: 'vic'
     GAPPSU: 'upsilon'
     GAPPSB: 'baklava'
@@ -106,7 +106,8 @@ jobs:
           cd "${{ env.REPO }}_${{ env.GAPPSB }}"
           COMMIT_B="branch: $(git rev-parse --abbrev-ref HEAD), commit: $(git log -1 --format='%s(%h)')"
           echo "COMMIT_B=${COMMIT_B}" >> $GITHUB_ENV
-          make gapps_arm64 
+          cp -r ${{ github.workspace }}/MiuiCameraOverlay overlay/
+          make gapps_arm64
           mv out/MindTheGapps-*.zip ${{ github.workspace }}
           cd -
       - name: Push changes
