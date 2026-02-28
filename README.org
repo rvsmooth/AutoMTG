@@ -1,5 +1,5 @@
 #+title: Auto MindTheGapps Builder
-- Builds mind the gapps with github actions for arm64 devices with android versions 14 and 15.
+- Builds mind the gapps with github actions for arm64 devices with android versions 14, 15, and 16.
 
 * Table of contents :toc:
 - [[#difference-from-the-original-mindthegapps-package][Difference from the original MindTheGapps package]]
